@@ -2,3 +2,6 @@
 .DS_Store
 .ipynb_checkpoints/*.ipynb
 examples/.ipynb_checkpoints/*.ipynb
+whatiscircuit/.ipynb_checkpoints/*.ipynb
+providers/.ipynb_checkpoints/*.ipynb
+simulators/.ipynb_checkpoints/*.ipynb
