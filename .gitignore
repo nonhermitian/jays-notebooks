@@ -5,3 +5,13 @@ examples/.ipynb_checkpoints/*.ipynb
 whatiscircuit/.ipynb_checkpoints/*.ipynb
 providers/.ipynb_checkpoints/*.ipynb
 simulators/.ipynb_checkpoints/*.ipynb
+quant-info/.ipynb_checkpoints/random_unitary-checkpoint.ipynb
+compilers/.ipynb_checkpoints/transpile-checkpoint.ipynb
+quantum_circuits/.ipynb_checkpoints/state_orep-checkpoint.ipynb
+.ipynb_checkpoints/README-checkpoint.md
+quant-info/.ipynb_checkpoints/Operators-checkpoint.ipynb
+quant-info/.ipynb_checkpoints/Weekmeasurement-checkpoint.ipynb
+operators/.ipynb_checkpoints/Operators-checkpoint.ipynb
+operators/.ipynb_checkpoints/random_unitary-checkpoint.ipynb
+operators/.ipynb_checkpoints/Weekmeasurement-checkpoint.ipynb
+operators/.ipynb_checkpoints/QiskitOrder-checkpoint.ipynb
