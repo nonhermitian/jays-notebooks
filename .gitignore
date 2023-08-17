@@ -15,3 +15,14 @@ operators/.ipynb_checkpoints/Operators-checkpoint.ipynb
 operators/.ipynb_checkpoints/random_unitary-checkpoint.ipynb
 operators/.ipynb_checkpoints/Weekmeasurement-checkpoint.ipynb
 operators/.ipynb_checkpoints/QiskitOrder-checkpoint.ipynb
+live_demos/.ipynb_checkpoints/algorithm_globals-checkpoint.py
+live_demos/.ipynb_checkpoints/algorithm_result-checkpoint.py
+live_demos/.ipynb_checkpoints/CHSH_demo-checkpoint.ipynb
+live_demos/.ipynb_checkpoints/CHSH_helpers-checkpoint.py
+live_demos/.ipynb_checkpoints/optimizer-checkpoint.py
+live_demos/.ipynb_checkpoints/spsa-checkpoint.py
+live_demos/.ipynb_checkpoints/VQE_correctly-checkpoint.ipynb
+live_demos/.ipynb_checkpoints/GoldenRation-checkpoint.ipynb
+live_demos/__pycache__/CHSH_helpers.cpython-311.pyc
+*.pyc
+live_demos/.ipynb_checkpoints/GoldenRatio-checkpoint.ipynb
