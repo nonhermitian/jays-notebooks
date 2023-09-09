@@ -33,5 +33,5 @@ class QUBO2Ising:
     def run(self, program):
         if not isinstance(program, self.input_types):
             raise TypeError(f"Program is invalid input type, must be one of {self.input_types}")
-        ising, constant = program.to_ising(opflow=False)
+        ising, constant = program.to_ising()
         return ising + SparsePauliOp.from_list([("I"*ising.num_qubits, constant)])

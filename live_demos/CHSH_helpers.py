@@ -1,16 +1,7 @@
-from qiskit import QuantumCircuit, transpile
 import numpy as np
 import time
 import datetime
 from qiskit.providers.jobstatus import JobStatus
-
-def build_chsh_circuit(parameter):
-    chsh_circuits = QuantumCircuit(2)
-    chsh_circuits.h(0)
-    chsh_circuits.cx(0, 1)
-    chsh_circuits.ry(parameter, 0)
-    return chsh_circuits
-
 
 def check_job_status(job):
     

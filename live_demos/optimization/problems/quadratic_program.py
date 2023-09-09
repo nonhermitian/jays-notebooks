@@ -21,8 +21,7 @@ from warnings import warn
 
 import numpy as np
 from numpy import ndarray
-from qiskit.opflow import OperatorBase
-from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from scipy.sparse import spmatrix
 
@@ -962,20 +961,12 @@ class QuadraticProgram:
 
         return substitute_variables(self, constants, variables)
 
-    def to_ising(
-        self, opflow: Optional[bool] = None
-    ) -> Tuple[Union[OperatorBase, SparsePauliOp], float]:
+    def to_ising(self):
         """Return the Ising Hamiltonian of this problem.
 
         Variables are mapped to qubits in the same order, i.e.,
         i-th variable is mapped to i-th qubit.
         See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
-
-        Args:
-            opflow: The output object is an OpFlow's operator if True.
-                Otherwise, it is ``SparsePauliOp``.
-                Refer to :func:`~qiskit_optimization.translators.to_ising`
-                for the default value.
 
         Returns:
             qubit_op: The qubit operator for the problem
@@ -985,41 +976,78 @@ class QuadraticProgram:
             QiskitOptimizationError: If a variable type is not binary.
             QiskitOptimizationError: If constraints exist in the problem.
         """
-        # pylint: disable=cyclic-import
-        from ..translators.ising import to_ising
+        # if problem has variables that are not binary, raise an error
+        if self.get_num_vars() > self.get_num_binary_vars():
+            raise QiskitOptimizationError(
+                "The type of all variables must be binary. "
+                "You can use `QuadraticProgramToQubo` converter "
+                "to convert integer variables to binary variables. "
+                "If the problem contains continuous variables, `to_ising` cannot handle it. "
+                "You might be able to solve it with `ADMMOptimizer`."
+            )
 
-        return to_ising(self, opflow=opflow)
+        # if constraints exist, raise an error
+        if self.linear_constraints or self.quadratic_constraints:
+            raise QiskitOptimizationError(
+                "There must be no constraint in the problem. "
+                "You can use `QuadraticProgramToQubo` converter "
+                "to convert constraints to penalty terms of the objective function."
+            )
+        # initialize Hamiltonian.
+        num_vars = self.get_num_vars()
+        pauli_list = []
+        offset = 0.0
+        zero = np.zeros(num_vars, dtype=bool)
 
-    def from_ising(
-        self,
-        qubit_op: Union[OperatorBase, BaseOperator],
-        offset: float = 0.0,
-        linear: bool = False,
-    ) -> None:
-        r"""Create a quadratic program from a qubit operator and a shift value.
+        # set a sign corresponding to a maximized or minimized problem.
+        # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
+        sense = self.objective.sense.value
 
-        Variables are mapped to qubits in the same order, i.e.,
-        i-th variable is mapped to i-th qubit.
-        See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
+        # convert a constant part of the objective function into Hamiltonian.
+        offset += self.objective.constant * sense
 
-        Args:
-            qubit_op: The qubit operator of the problem.
-            offset: The constant value in the Ising Hamiltonian.
-            linear: If linear is True, :math:`x^2` is treated as a linear term
-                since :math:`x^2 = x` for :math:`x \in \{0,1\}`.
-                Else, :math:`x^2` is treated as a quadratic term.
-                The default value is False.
+        # convert linear parts of the objective function into Hamiltonian.
+        for idx, coef in self.objective.linear.to_dict().items():
+            z_p = zero.copy()
+            weight = coef * sense / 2
+            z_p[idx] = True
 
-        Raises:
-            QiskitOptimizationError: If there are Pauli Xs in any Pauli term
-            QiskitOptimizationError: If there are more than 2 Pauli Zs in any Pauli term
-            NotImplementedError: If the input operator is a ListOp
-        """
-        # pylint: disable=cyclic-import
-        from ..translators.ising import from_ising
+            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
+            offset += weight
 
-        other = from_ising(qubit_op, offset, linear)
-        self._copy_from(other, include_name=False)
+        # create Pauli terms
+        for (i, j), coeff in self.objective.quadratic.to_dict().items():
+            weight = coeff * sense / 4
+
+            if i == j:
+                offset += weight
+            else:
+                z_p = zero.copy()
+                z_p[i] = True
+                z_p[j] = True
+                pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), weight))
+
+            z_p = zero.copy()
+            z_p[i] = True
+            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
+
+            z_p = zero.copy()
+            z_p[j] = True
+            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
+
+            offset += weight
+
+        if pauli_list:
+            # Remove paulis whose coefficients are zeros.
+            qubit_op = sum(pauli_list).simplify(atol=0)
+        else:
+            # If there is no variable, we set num_nodes=1 so that qubit_op should be an operator.
+            # If num_nodes=0, I^0 = 1 (int).
+            num_vars = max(1, num_vars)
+            qubit_op = SparsePauliOp("I" * num_vars, 0)
+
+        return qubit_op, offset
+
 
     def get_feasibility_info(
         self, x: Union[List[float], np.ndarray]

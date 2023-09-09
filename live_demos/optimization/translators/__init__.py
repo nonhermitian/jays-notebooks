@@ -26,13 +26,10 @@ Translators
    :nosignatures:
 
    from_docplex_mp
-   to_ising
 """
 
 from .docplex_mp import from_docplex_mp
-from .ising import to_ising
 
 __all__ = [
     "from_docplex_mp",
-    "to_ising",
 ]
