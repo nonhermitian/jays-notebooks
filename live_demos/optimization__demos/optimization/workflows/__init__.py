@@ -13,4 +13,4 @@
 """
 Workflows
 """
-from .qubo import QUBO_transformer
+from .qubo import QuadraticConverter, QuadraticPostprocess

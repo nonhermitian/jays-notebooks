@@ -13,16 +13,27 @@
 """
 QUBO workflow
 """
-from optimization.passes import (InequalityToEquality, IntegerToBinary, 
-                                 LinearEqualityToPenalty, LinearInequalityToPenalty,
-                                 MaximizeToMinimize)
+from optimization.passes import (InequalityToEquality,
+                                 IntegerToBinary,
+                                 LinearEqualityToPenalty,
+                                 LinearInequalityToPenalty,
+                                 MaximizeToMinimize,
+                                 EvaluateProgramSolution,
+                                 UnrollQUBOVariables
+                                 )
 from optimization.fulqrum import Workflow
 
 
-def QUBO_transformer():
+def QuadraticConverter():
     return Workflow([InequalityToEquality(), # Transformation
                      IntegerToBinary(), # Transformation
                      LinearEqualityToPenalty(), # Transformation
                      LinearInequalityToPenalty(), # Transformation
                      MaximizeToMinimize(), # Transformation
-                    ], name='qubo-transformer')
+                    ], name='quadratic-converter')
+
+
+def QuadraticPostprocess(qubo, quadratic_transformer):
+    return Workflow([EvaluateProgramSolution(qubo),
+                     UnrollQUBOVariables(quadratic_transformer),
+                    ], name='quadratic-postprocess')
