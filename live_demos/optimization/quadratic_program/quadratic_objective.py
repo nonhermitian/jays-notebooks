@@ -203,14 +203,14 @@ class QuadraticObjective(QuadraticProgramElement):
 
     def __repr__(self):
         # pylint: disable=cyclic-import
-        from ..translators.prettyprint import expr2str, DEFAULT_TRUNCATE
+        from .prettyprint import expr2str, DEFAULT_TRUNCATE
 
         expr_str = expr2str(self.constant, self.linear, self.quadratic, DEFAULT_TRUNCATE)
         return f"<{self.__class__.__name__}: {self._sense.name.lower()} {expr_str}>"
 
     def __str__(self):
         # pylint: disable=cyclic-import
-        from ..translators.prettyprint import expr2str
+        from .prettyprint import expr2str
 
         expr_str = expr2str(self.constant, self.linear, self.quadratic)
         return f"{self._sense.name.lower()} {expr_str}"
