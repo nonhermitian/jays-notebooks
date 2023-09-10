@@ -72,3 +72,8 @@ live_demos/optimization/quadratic_program/.ipynb_checkpoints/quadratic_program-c
 live_demos/optimization/quadratic_program/.ipynb_checkpoints/__init__-checkpoint.py
 live_demos/optimization/problems/.ipynb_checkpoints/substitute_variables-checkpoint.py
 live_demos/.ipynb_checkpoints/maxcut_workflow-checkpoint.ipynb
+live_demos/optimization/translators/.ipynb_checkpoints/qubo_to_hamiltonian-checkpoint.py
+live_demos/optimization/translators/.ipynb_checkpoints/qubo_to_ising-checkpoint.py
+live_demos/.ipynb_checkpoints/fulqrum-checkpoint.py
+live_demos/quadratic_program/.ipynb_checkpoints/__init__-checkpoint.py
+*.py
