@@ -76,4 +76,3 @@ live_demos/optimization/translators/.ipynb_checkpoints/qubo_to_hamiltonian-check
 live_demos/optimization/translators/.ipynb_checkpoints/qubo_to_ising-checkpoint.py
 live_demos/.ipynb_checkpoints/fulqrum-checkpoint.py
 live_demos/quadratic_program/.ipynb_checkpoints/__init__-checkpoint.py
-*.py
