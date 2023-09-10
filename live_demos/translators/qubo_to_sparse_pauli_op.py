@@ -1,3 +1,6 @@
+# This code is a derivative work of the Qiskit Optimization Module
+# ----------------------------------------------------------------
+
 # This code is part of Qiskit.
 #
 # (C) Copyright IBM 2021, 2022.
@@ -10,13 +13,18 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Translator from a qubo form of a Quadratic Program to Ising"""
+"""
+Translator functions from a QuadraticProgram Object to a Qiskit Operator 
+and today we only support an Operator in Sparse Pauli form
+
+"""
 
 import numpy as np
 from qiskit.quantum_info import Pauli, SparsePauliOp
 
-from quadratic_program.exceptions import QuadraticProgramError
 from quadratic_program import QuadraticProgram
+from quadratic_program.exceptions import QuadraticProgramError
+
 
 
 def qubo_to_sparse_pauli_op(qp: QuadraticProgram):
@@ -31,24 +39,23 @@ def qubo_to_sparse_pauli_op(qp: QuadraticProgram):
         offset: The constant value in the Ising Hamiltonian.
 
     Raises:
-        QiskitOptimizationError: If a variable type is not binary.
-        QiskitOptimizationError: If constraints exist in the problem.
+        QuadraticProgramError: If a variable type is not binary.
+        QuadraticProgramError: If constraints exist in the problem.
     """
     # if problem has variables that are not binary, raise an error
     if qp.get_num_vars() > qp.get_num_binary_vars():
         raise QuadraticProgramError(
             "The type of all variables must be binary. "
-            "You can use `QuadraticProgramToQubo` converter "
+            "You can use Quadratic Program Passes"
             "to convert integer variables to binary variables. "
-            "If the problem contains continuous variables, `to_ising` cannot handle it. "
-            "You might be able to solve it with `ADMMOptimizer`."
+            "If the problem contains continuous variables this method does not work "
         )
 
     # if constraints exist, raise an error
     if qp.linear_constraints or qp.quadratic_constraints:
         raise QuadraticProgramError(
             "There must be no constraint in the problem. "
-            "You can use `QuadraticProgramToQubo` converter "
+            "You can use Quadratic Program Passes"
             "to convert constraints to penalty terms of the objective function."
         )
     # initialize Hamiltonian.

@@ -11,6 +11,6 @@
 # that they have been altered from the originals.
 
 """
-Workflows
+
 """
 from .qubo import QuadraticConverter, QuadraticPostprocess

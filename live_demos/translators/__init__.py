@@ -1,3 +1,7 @@
+# This code is a derivative work of the Qiskit Optimization 
+# and Qiskit Nature Module
+# --------------------------------------------------------------------------
+
 # This code is part of Qiskit.
 #
 # (C) Copyright IBM 2021, 2022.
@@ -11,7 +15,17 @@
 # that they have been altered from the originals.
 
 """
-Quadratic Program translators
+Translator functions
+
+1. DOCPLEX.MP (IBM Decision Optimization - Mathematical Programming Module) 
+    -> QuadraticProgram
+2. QuadraticProgram 
+    -> Qiskit Operator in Sparse Pauli Formn (Quantum)
+
+3. QCSchema 
+    -> Fermi Operator 
+4. Fermi Operator 
+    -> Qiskit Operator in Sparse Pauli Formn (Quantum)
 
 """
 

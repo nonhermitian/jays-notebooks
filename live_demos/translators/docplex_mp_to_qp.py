@@ -1,3 +1,6 @@
+# This code is a derivative work of the Qiskit Optimization Module
+# ----------------------------------------------------------------
+
 # This code is part of Qiskit.
 #
 # (C) Copyright IBM 2021, 2022.
@@ -10,7 +13,11 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Translate from a docplex.mp model to a quadratic program"""
+"""
+Translator functions from DOCPLEX.MP (IBM Decision Optimization 
+- Mathematical Programming Module) to a QuadraticProgram Object
+
+"""
 
 from math import isclose
 from typing import Any, Dict, Optional, Tuple, cast
@@ -30,8 +37,9 @@ from docplex.mp.model import Model
 from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 
-from quadratic_program.exceptions import QuadraticProgramError
 from quadratic_program import QuadraticProgram
+from quadratic_program.exceptions import QuadraticProgramError
+
 
 def docplex_mp_to_qp(model: Model, indicator_big_m: Optional[float] = None) -> QuadraticProgram:
     """Translate a docplex.mp model into a quadratic program.
@@ -56,16 +64,17 @@ def docplex_mp_to_qp(model: Model, indicator_big_m: Optional[float] = None) -> Q
         QuadraticProgramError: if the model contains unsupported elements.
     """
     if not isinstance(model, Model):
+        #This should raise a docplex error
         raise QuadraticProgramError(f"The model is not compatible: {model}")
 
     if model.number_of_user_cut_constraints > 0:
-        raise QuadraticProgramError("User cut constraints are not supported")
+        raise QuadraticProgramError("User cut constraints are not supported in QP")
 
     if model.number_of_lazy_constraints > 0:
-        raise QuadraticProgramError("Lazy constraints are not supported")
+        raise QuadraticProgramError("Lazy constraints are not supported in QP ")
 
     if model.number_of_sos > 0:
-        raise QuadraticProgramError("SOS sets are not supported")
+        raise QuadraticProgramError("SOS sets are not supported in QP")
 
     # check constraint type
     for constraint in model.iter_constraints():
@@ -73,7 +82,7 @@ def docplex_mp_to_qp(model: Model, indicator_big_m: Optional[float] = None) -> Q
         if isinstance(constraint, LinearConstraint):
             if isinstance(constraint, NotEqualConstraint):
                 # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
-                # but it cannot be handled by optimization.
+                # but it cannot be handled by QP.
                 raise QiskitOptimizationError(f"Unsupported constraint: {constraint}")
         elif not isinstance(constraint, (QuadraticConstraint, IndicatorConstraint)):
             raise QiskitOptimizationError(f"Unsupported constraint: {constraint}")
