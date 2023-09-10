@@ -3,7 +3,26 @@ import time
 import datetime
 from qiskit.providers.jobstatus import JobStatus
 
-def check_job_status(job):
+import pickle
+ 
+def save_object(obj, filename):
+    try:
+        save_name = filename +".picke"
+        print(save_name)
+        with open(save_name, "wb") as f:
+            pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
+    except Exception as ex:
+        print("Error during pickling object (Possibly unsupported):", ex)
+
+def load_object(filename):
+    try:
+        save_name = filename +".picke"
+        with open(save_name, "rb") as f:
+            return pickle.load(f)
+    except Exception as ex:
+        print("Error during unpickling object (Possibly unsupported):", ex)
+
+def check_job_status(job, filename):
     
     # Calculate the total number of seconds
     total_seconds = 4000
@@ -23,13 +42,12 @@ def check_job_status(job):
             # print("in loop")
             # Build the CHSH witnesses
             values = job.result().values
+            save_object(values, filename)
             break
         
         # print(job.status())
     else:
-        values = np.array([ 1.94677571,  2.47369227,  2.64866075,  2.67480547,  2.2926904 ,
-                            1.7697961 ,  0.83461975, -0.0502783 , -0.72601863, -1.67929516,
-                            -2.2484455 , -2.54207076, -2.73916169, -2.54810415, -2.01113193,
-                            -1.23684614, -0.4846828 ,  0.39015959,  1.18053444,  1.98699835])
+        values = load_object(filename)
+            
     return values
     
