@@ -56,8 +56,6 @@ from .flip_problem_sense import MaximizeToMinimize
 from .flip_problem_sense import MinimizeToMaximize
 from .quadratic_program_to_qubo import QuadraticProgramToQubo
 from .quadratic_program_converter import QuadraticProgramConverter
-from .quadratic_program_to_ising import QuadraticProgram2Ising
-from .qubo_to_ising import QUBO2Ising
 from .qubo_unroller import UnrollQUBOVariables
 from .eval_solution import EvaluateProgramSolution
 

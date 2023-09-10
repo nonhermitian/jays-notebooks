@@ -15,7 +15,7 @@
 # We import `problems` module not `QuadraticProgram` class
 # to resolve the circular import issue of sphinx.
 # See https://github.com/agronholm/sphinx-autodoc-typehints#dealing-with-circular-imports
-from optimization import problems  # pylint: disable=unused-import, cyclic-import
+from optimization import quadratic_program  # pylint: disable=unused-import, cyclic-import
 
 
 class QuadraticProgramElement:

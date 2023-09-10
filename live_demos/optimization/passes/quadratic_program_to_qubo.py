@@ -22,7 +22,7 @@ from ..passes.integer_to_binary import IntegerToBinary
 from ..passes.linear_equality_to_penalty import LinearEqualityToPenalty
 from ..passes.linear_inequality_to_penalty import LinearInequalityToPenalty
 from ..exceptions import QiskitOptimizationError
-from ..problems.quadratic_program import QuadraticProgram
+from ..quadratic_program import QuadraticProgram
 from .quadratic_program_converter import QuadraticProgramConverter
 
 

@@ -21,8 +21,6 @@ from warnings import warn
 
 import numpy as np
 from numpy import ndarray
-from qiskit.quantum_info import Pauli, SparsePauliOp
-from qiskit.quantum_info.operators.base_operator import BaseOperator
 from scipy.sparse import spmatrix
 
 from ..exceptions import QiskitOptimizationError
@@ -77,7 +75,7 @@ class QuadraticProgram:
         self._objective = QuadraticObjective(self)
 
     def __repr__(self) -> str:
-        from ..translators.prettyprint import DEFAULT_TRUNCATE, expr2str
+        from .prettyprint import DEFAULT_TRUNCATE, expr2str
 
         objective = expr2str(
             constant=self._objective.constant,
@@ -103,13 +101,6 @@ class QuadraticProgram:
             f"{num_constraints} constraints, "
             f"'{self._name}')"
         )
-    
-    @classmethod
-    def from_docplex_mp(self, model, indicator_big_m=None):
-        """Generate a QuantumProgram from a CPLEX 
-        """
-        from optimization.translators import from_docplex_mp
-        return from_docplex_mp(model, indicator_big_m=indicator_big_m)
 
     def clear(self) -> None:
         """Clears the quadratic program, i.e., deletes all variables, constraints, the
@@ -927,7 +918,6 @@ class QuadraticProgram:
 
         return to_docplex_mp(self).export_as_lp_string()
 
-
     def substitute_variables(
         self,
         constants: Optional[Dict[Union[str, int], float]] = None,
@@ -960,94 +950,6 @@ class QuadraticProgram:
         from .substitute_variables import substitute_variables
 
         return substitute_variables(self, constants, variables)
-
-    def to_ising(self):
-        """Return the Ising Hamiltonian of this problem.
-
-        Variables are mapped to qubits in the same order, i.e.,
-        i-th variable is mapped to i-th qubit.
-        See https://github.com/Qiskit/qiskit-terra/issues/1148 for details.
-
-        Returns:
-            qubit_op: The qubit operator for the problem
-            offset: The constant value in the Ising Hamiltonian.
-
-        Raises:
-            QiskitOptimizationError: If a variable type is not binary.
-            QiskitOptimizationError: If constraints exist in the problem.
-        """
-        # if problem has variables that are not binary, raise an error
-        if self.get_num_vars() > self.get_num_binary_vars():
-            raise QiskitOptimizationError(
-                "The type of all variables must be binary. "
-                "You can use `QuadraticProgramToQubo` converter "
-                "to convert integer variables to binary variables. "
-                "If the problem contains continuous variables, `to_ising` cannot handle it. "
-                "You might be able to solve it with `ADMMOptimizer`."
-            )
-
-        # if constraints exist, raise an error
-        if self.linear_constraints or self.quadratic_constraints:
-            raise QiskitOptimizationError(
-                "There must be no constraint in the problem. "
-                "You can use `QuadraticProgramToQubo` converter "
-                "to convert constraints to penalty terms of the objective function."
-            )
-        # initialize Hamiltonian.
-        num_vars = self.get_num_vars()
-        pauli_list = []
-        offset = 0.0
-        zero = np.zeros(num_vars, dtype=bool)
-
-        # set a sign corresponding to a maximized or minimized problem.
-        # sign == 1 is for minimized problem. sign == -1 is for maximized problem.
-        sense = self.objective.sense.value
-
-        # convert a constant part of the objective function into Hamiltonian.
-        offset += self.objective.constant * sense
-
-        # convert linear parts of the objective function into Hamiltonian.
-        for idx, coef in self.objective.linear.to_dict().items():
-            z_p = zero.copy()
-            weight = coef * sense / 2
-            z_p[idx] = True
-
-            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
-            offset += weight
-
-        # create Pauli terms
-        for (i, j), coeff in self.objective.quadratic.to_dict().items():
-            weight = coeff * sense / 4
-
-            if i == j:
-                offset += weight
-            else:
-                z_p = zero.copy()
-                z_p[i] = True
-                z_p[j] = True
-                pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), weight))
-
-            z_p = zero.copy()
-            z_p[i] = True
-            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
-
-            z_p = zero.copy()
-            z_p[j] = True
-            pauli_list.append(SparsePauliOp(Pauli((z_p, zero)), -weight))
-
-            offset += weight
-
-        if pauli_list:
-            # Remove paulis whose coefficients are zeros.
-            qubit_op = sum(pauli_list).simplify(atol=0)
-        else:
-            # If there is no variable, we set num_nodes=1 so that qubit_op should be an operator.
-            # If num_nodes=0, I^0 = 1 (int).
-            num_vars = max(1, num_vars)
-            qubit_op = SparsePauliOp("I" * num_vars, 0)
-
-        return qubit_op, offset
-
 
     def get_feasibility_info(
         self, x: Union[List[float], np.ndarray]
@@ -1123,7 +1025,7 @@ class QuadraticProgram:
             QiskitOptimizationError: if there is a non-printable name.
         """
         # pylint: disable=cyclic-import
-        from qiskit_optimization.translators.prettyprint import prettyprint
+        from .prettyprint import prettyprint
 
         return prettyprint(self, wrap)
 

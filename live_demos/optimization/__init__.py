@@ -13,6 +13,6 @@
 
 from .version import __version__
 from .exceptions import QiskitOptimizationError
-from .problems.quadratic_program import QuadraticProgram
+from .quadratic_program import QuadraticProgram
 
 __all__ = ["__version__", "QuadraticProgram", "QiskitOptimizationError"]

@@ -17,7 +17,7 @@ from typing import List, Union
 
 import numpy as np
 
-from ..problems.quadratic_program import QuadraticProgram
+from ..quadratic_program import QuadraticProgram
 
 
 class QuadraticProgramConverter(ABC):

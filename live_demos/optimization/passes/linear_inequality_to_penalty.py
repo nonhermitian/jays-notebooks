@@ -19,10 +19,10 @@ import numpy as np
 
 from .quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
-from ..problems.constraint import Constraint, ConstraintSense
-from ..problems.quadratic_objective import QuadraticObjective
-from ..problems.quadratic_program import QuadraticProgram
-from ..problems.variable import Variable
+from ..quadratic_program.constraint import Constraint, ConstraintSense
+from ..quadratic_program.quadratic_objective import QuadraticObjective
+from ..quadratic_program import QuadraticProgram
+from ..quadratic_program.variable import Variable
 
 logger = logging.getLogger(__name__)
 

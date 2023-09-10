@@ -19,8 +19,8 @@ import numpy as np
 
 from .quadratic_program_converter import QuadraticProgramConverter
 from ..exceptions import QiskitOptimizationError
-from ..problems.quadratic_objective import ObjSense
-from ..problems.quadratic_program import QuadraticProgram
+from ..quadratic_program.quadratic_objective import ObjSense
+from ..quadratic_program import QuadraticProgram
 
 
 class _FlipProblemSense(QuadraticProgramConverter):

@@ -62,3 +62,12 @@ live_demos/optimization/translators/.ipynb_checkpoints/__init__-checkpoint.py
 live_demos/optimization/translators/.ipynb_checkpoints/docplex_mp-checkpoint.py
 live_demos/optimization/translators/.ipynb_checkpoints/prettyprint-checkpoint.py
 live_demos/optimization/workflows/.ipynb_checkpoints/__init__-checkpoint.py
+live_demos/optimization/.ipynb_checkpoints/__init__-checkpoint.py
+live_demos/optimization/.ipynb_checkpoints/exceptions-checkpoint.py
+live_demos/optimization/.ipynb_checkpoints/version-checkpoint.py
+live_demos/optimization/.ipynb_checkpoints/fulqrum-checkpoint.py
+live_demos/optimization/passes/.ipynb_checkpoints/__init__-checkpoint.py
+live_demos/optimization/translators/.ipynb_checkpoints/docplex_mp_to_qp-checkpoint.py
+live_demos/optimization/quadratic_program/.ipynb_checkpoints/quadratic_program-checkpoint.py
+live_demos/optimization/quadratic_program/.ipynb_checkpoints/__init__-checkpoint.py
+live_demos/optimization/problems/.ipynb_checkpoints/substitute_variables-checkpoint.py

@@ -11,25 +11,13 @@
 # that they have been altered from the originals.
 
 """
-Quadratic program translators (:mod:`qiskit_optimization.translators`)
-======================================================================
+Optimization translators
 
-.. currentmodule:: qiskit_optimization.translators
-
-Translators between :class:`~qiskit_optimization.problems.QuadraticProgram` and
-other optimization models or other objects.
-
-Translators
-======================
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   from_docplex_mp
 """
 
-from .docplex_mp import from_docplex_mp
+from .docplex_mp_to_qp import docplex_mp_to_qp
+from .qubo_to_ising import qubo_to_ising
 
 __all__ = [
-    "from_docplex_mp",
+    "docplex_mp_to_qp", "qubo_to_ising"
 ]

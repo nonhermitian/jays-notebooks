@@ -11,42 +11,16 @@
 # that they have been altered from the originals.
 
 """
-Optimization problems (:mod:`optimization.problems`)
-====================================================
-
-.. currentmodule:: optimization.problems
-
-Quadratic program
-=================
-Structures for defining an optimization problem.
-
-Note:
-    The following classes are not intended to be instantiated directly.
-    Objects of these types are available within an instantiated
-    :class:`~qiskit_optimization.QuadraticProgram`.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   Constraint
-   LinearExpression
-   LinearConstraint
-   QuadraticExpression
-   QuadraticConstraint
-   QuadraticObjective
-   QuadraticProgramElement
-   Variable
 
 """
 
+from .quadratic_program import QuadraticProgram
 from .constraint import Constraint
 from .linear_constraint import LinearConstraint
 from .linear_expression import LinearExpression
-from .quadratic_constraint import QuadraticConstraint
 from .quadratic_expression import QuadraticExpression
+from .quadratic_constraint import QuadraticConstraint
 from .quadratic_objective import QuadraticObjective
-from .quadratic_program import QuadraticProgram
 from .quadratic_program_element import QuadraticProgramElement
 from .variable import Variable, VarType
 

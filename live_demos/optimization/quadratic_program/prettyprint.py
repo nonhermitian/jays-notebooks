@@ -19,13 +19,12 @@ from typing import List, Optional, Union, cast
 import numpy as np
 
 from optimization import QiskitOptimizationError
-from optimization.problems import (
-    LinearExpression,
-    QuadraticExpression,
-    QuadraticObjective,
-    QuadraticProgram,
-    VarType,
-)
+from .quadratic_expression import QuadraticExpression
+from .linear_expression import LinearExpression
+from .quadratic_objective import QuadraticObjective
+from .variable import VarType
+from .quadratic_program import QuadraticProgram
+
 
 DEFAULT_TRUNCATE = 50
 INFINITY = np.inf

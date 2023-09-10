@@ -18,12 +18,12 @@ from typing import List, Optional, Union
 import numpy as np
 
 from ..exceptions import QiskitOptimizationError
-from ..problems.constraint import Constraint
-from ..problems.linear_constraint import LinearConstraint
-from ..problems.quadratic_constraint import QuadraticConstraint
-from ..problems.quadratic_objective import QuadraticObjective
-from ..problems.quadratic_program import QuadraticProgram
-from ..problems.variable import Variable
+from ..quadratic_program.constraint import Constraint
+from ..quadratic_program.linear_constraint import LinearConstraint
+from ..quadratic_program.quadratic_constraint import QuadraticConstraint
+from ..quadratic_program.quadratic_objective import QuadraticObjective
+from ..quadratic_program import QuadraticProgram
+from ..quadratic_program.variable import Variable
 from .quadratic_program_converter import QuadraticProgramConverter
 
 

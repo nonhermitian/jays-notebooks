@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Translator between a docplex.mp model and a quadratic program"""
+"""Translate from a docplex.mp model to a quadratic program"""
 
 from math import isclose
 from typing import Any, Dict, Optional, Tuple, cast
@@ -31,107 +31,54 @@ from docplex.mp.quad import QuadExpr
 from docplex.mp.vartype import BinaryVarType, ContinuousVarType, IntegerVarType
 
 from optimization.exceptions import QiskitOptimizationError
-from optimization.problems.constraint import Constraint
-from optimization.problems.quadratic_objective import QuadraticObjective
-from optimization.problems.quadratic_program import QuadraticProgram
-from optimization.problems.variable import Variable
+from optimization import QuadraticProgram
 
+def docplex_mp_to_qp(model: Model, indicator_big_m: Optional[float] = None) -> QuadraticProgram:
+    """Translate a docplex.mp model into a quadratic program.
 
-def to_docplex_mp(quadratic_program: QuadraticProgram) -> Model:
-    """Returns a docplex.mp model corresponding to a quadratic program.
+    Note that this supports the following features of docplex:
+
+    - linear / quadratic objective function
+    - linear / quadratic / indicator constraints
+    - binary / integer / continuous variables
+    - logical expressions (``logical_not``, ``logical_and``, and ``logical_or``)
 
     Args:
-        quadratic_program: The quadratic program to be translated.
+        model: The docplex.mp model to be loaded.
+        indicator_big_m: The big-M value used for the big-M formulation to convert
+            indicator constraints into linear constraints.
+            If ``None``, it is automatically derived from the model.
 
     Returns:
-        The docplex.mp model corresponding to a quadratic program.
+        The quadratic program corresponding to the model.
 
     Raises:
-        QiskitOptimizationError: if the model contains non-supported elements (should never happen).
+        QiskitOptimizationError: if the model contains unsupported elements.
     """
-    # initialize model
-    mdl = Model(quadratic_program.name)
+    if not isinstance(model, Model):
+        raise QiskitOptimizationError(f"The model is not compatible: {model}")
 
-    # add variables
-    var = {}
-    for idx, x in enumerate(quadratic_program.variables):
-        if x.vartype == Variable.Type.CONTINUOUS:
-            var[idx] = mdl.continuous_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
-        elif x.vartype == Variable.Type.BINARY:
-            var[idx] = mdl.binary_var(name=x.name)
-        elif x.vartype == Variable.Type.INTEGER:
-            var[idx] = mdl.integer_var(lb=x.lowerbound, ub=x.upperbound, name=x.name)
-        else:
-            # should never happen
-            raise QiskitOptimizationError(f"Internal error: unsupported variable type: {x.vartype}")
+    if model.number_of_user_cut_constraints > 0:
+        raise QiskitOptimizationError("User cut constraints are not supported")
 
-    # add objective
-    objective = (
-        quadratic_program.objective.constant
-        + mdl.sum(
-            v * var[cast(int, i)] for i, v in quadratic_program.objective.linear.to_dict().items()
-        )
-        + mdl.sum(
-            v * var[cast(int, i)] * var[cast(int, j)]
-            for (i, j), v in quadratic_program.objective.quadratic.to_dict().items()
-        )
-    )
-    if quadratic_program.objective.sense == QuadraticObjective.Sense.MINIMIZE:
-        mdl.minimize(objective)
-    else:
-        mdl.maximize(objective)
+    if model.number_of_lazy_constraints > 0:
+        raise QiskitOptimizationError("Lazy constraints are not supported")
 
-    # add linear constraints
-    for l_constraint in quadratic_program.linear_constraints:
-        name = l_constraint.name
-        rhs = l_constraint.rhs
-        if rhs == 0 and l_constraint.linear.coefficients.nnz == 0:
-            continue
-        linear_expr = mdl.sum(
-            v * var[cast(int, j)] for j, v in l_constraint.linear.to_dict().items()
-        )
-        sense = l_constraint.sense
-        if sense == Constraint.Sense.EQ:
-            mdl.add_constraint(linear_expr == rhs, ctname=name)
-        elif sense == Constraint.Sense.GE:
-            mdl.add_constraint(linear_expr >= rhs, ctname=name)
-        elif sense == Constraint.Sense.LE:
-            mdl.add_constraint(linear_expr <= rhs, ctname=name)
-        else:
-            # should never happen
-            raise QiskitOptimizationError(f"Internal error: unsupported constraint sense: {sense}")
+    if model.number_of_sos > 0:
+        raise QiskitOptimizationError("SOS sets are not supported")
 
-    # add quadratic constraints
-    for q_constraint in quadratic_program.quadratic_constraints:
-        name = q_constraint.name
-        rhs = q_constraint.rhs
-        if (
-            rhs == 0
-            and q_constraint.linear.coefficients.nnz == 0
-            and q_constraint.quadratic.coefficients.nnz == 0
-        ):
-            continue
-        quadratic_expr = mdl.sum(
-            v * var[cast(int, j)] for j, v in q_constraint.linear.to_dict().items()
-        ) + mdl.sum(
-            v * var[cast(int, j)] * var[cast(int, k)]
-            for (j, k), v in q_constraint.quadratic.to_dict().items()
-        )
-        sense = q_constraint.sense
-        if sense == Constraint.Sense.EQ:
-            mdl.add_constraint(quadratic_expr == rhs, ctname=name)
-        elif sense == Constraint.Sense.GE:
-            mdl.add_constraint(quadratic_expr >= rhs, ctname=name)
-        elif sense == Constraint.Sense.LE:
-            mdl.add_constraint(quadratic_expr <= rhs, ctname=name)
-        else:
-            # should never happen
-            raise QiskitOptimizationError(f"Internal error: unsupported constraint sense: {sense}")
+    # check constraint type
+    for constraint in model.iter_constraints():
+        # If any constraint is not linear/quadratic/indicator constraints, it raises an error.
+        if isinstance(constraint, LinearConstraint):
+            if isinstance(constraint, NotEqualConstraint):
+                # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
+                # but it cannot be handled by optimization.
+                raise QiskitOptimizationError(f"Unsupported constraint: {constraint}")
+        elif not isinstance(constraint, (QuadraticConstraint, IndicatorConstraint)):
+            raise QiskitOptimizationError(f"Unsupported constraint: {constraint}")
 
-    return mdl
-
-
-# from_docplex_mp
+    return _FromDocplexMp(model).quadratic_program(indicator_big_m)
 
 
 class _FromDocplexMp:
@@ -376,49 +323,3 @@ class _FromDocplexMp:
         return ret
 
 
-def from_docplex_mp(model: Model, indicator_big_m: Optional[float] = None) -> QuadraticProgram:
-    """Translate a docplex.mp model into a quadratic program.
-
-    Note that this supports the following features of docplex:
-
-    - linear / quadratic objective function
-    - linear / quadratic / indicator constraints
-    - binary / integer / continuous variables
-    - logical expressions (``logical_not``, ``logical_and``, and ``logical_or``)
-
-    Args:
-        model: The docplex.mp model to be loaded.
-        indicator_big_m: The big-M value used for the big-M formulation to convert
-            indicator constraints into linear constraints.
-            If ``None``, it is automatically derived from the model.
-
-    Returns:
-        The quadratic program corresponding to the model.
-
-    Raises:
-        QiskitOptimizationError: if the model contains unsupported elements.
-    """
-    if not isinstance(model, Model):
-        raise QiskitOptimizationError(f"The model is not compatible: {model}")
-
-    if model.number_of_user_cut_constraints > 0:
-        raise QiskitOptimizationError("User cut constraints are not supported")
-
-    if model.number_of_lazy_constraints > 0:
-        raise QiskitOptimizationError("Lazy constraints are not supported")
-
-    if model.number_of_sos > 0:
-        raise QiskitOptimizationError("SOS sets are not supported")
-
-    # check constraint type
-    for constraint in model.iter_constraints():
-        # If any constraint is not linear/quadratic/indicator constraints, it raises an error.
-        if isinstance(constraint, LinearConstraint):
-            if isinstance(constraint, NotEqualConstraint):
-                # Notice that NotEqualConstraint is a subclass of Docplex's LinearConstraint,
-                # but it cannot be handled by optimization.
-                raise QiskitOptimizationError(f"Unsupported constraint: {constraint}")
-        elif not isinstance(constraint, (QuadraticConstraint, IndicatorConstraint)):
-            raise QiskitOptimizationError(f"Unsupported constraint: {constraint}")
-
-    return _FromDocplexMp(model).quadratic_program(indicator_big_m)
