@@ -11,8 +11,12 @@
 # that they have been altered from the originals.
 
 """
-QUBO workflow
+Default Workflow for transforming a Quadradic Program with 
+Constraints to a Quadratic Program without constraints (QUBO form)
+
 """
+from fulqrum import Workflow
+
 from quadratic_program.passes import (InequalityToEquality,
                                       IntegerToBinary,
                                       LinearEqualityToPenalty,
@@ -21,10 +25,8 @@ from quadratic_program.passes import (InequalityToEquality,
                                       EvaluateProgramSolution,
                                       UnrollQUBOVariables
                                      )
-from fulqrum import Workflow
 
-
-def QuadraticConverter():
+def QuadraticProgramConverter():
     return Workflow([InequalityToEquality(), # Transformation
                      IntegerToBinary(), # Transformation
                      LinearEqualityToPenalty(), # Transformation
@@ -33,7 +35,7 @@ def QuadraticConverter():
                     ], name='quadratic-converter')
 
 
-def QuadraticPostprocess(qubo, quadratic_transformer):
+def QuadraticProgramPostprocess(qubo, quadratic_transformer):
     return Workflow([EvaluateProgramSolution(qubo),
                      UnrollQUBOVariables(quadratic_transformer),
                     ], name='quadratic-postprocess')

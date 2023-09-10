@@ -11,6 +11,17 @@
 # that they have been altered from the originals.
 
 """
+Library of workflows for workting with problem objects, Qiskit Operators, and Qiskit Circuits
 
+1. QuadraticProgramConverter
+    Default Workflow for transforming a Quadradic Program with 
+    Constraints to a Quadratic Program without constraints (QUBO form)
+2. QuadraticProgramPostprocess
+    Default Workflow for recontructing the the answer to the Quadradic Program after it has run
+    on a quantum computer
+    
+3. Fermions
+3. ...
 """
-from .qubo import QuadraticConverter, QuadraticPostprocess
+from .quadratic_program_workflows import QuadraticProgramConverter
+from .quadratic_program_workflows import QuadraticProgramPostprocess
