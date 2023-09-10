@@ -50,3 +50,15 @@ live_demos/optimization/workflows/.ipynb_checkpoints/qubo-checkpoint.py
 live_demos/.ipynb_checkpoints/helpers-checkpoint.py
 live_demos/.ipynb_checkpoints/CHSH-checkpoint.ipynb
 live_demos/.ipynb_checkpoints/CHSH-checkpoint.ipynb
+live_demos/.ipynb_checkpoints/basic_optimization_workflow-checkpoint.ipynb
+live_demos/.ipynb_checkpoints/knapsack_workflow-checkpoint.ipynb
+live_demos/optimization/passes/.ipynb_checkpoints/quadratic_program_to_ising-checkpoint.py
+live_demos/optimization/passes/.ipynb_checkpoints/quadratic_program_to_qubo-checkpoint.py
+live_demos/optimization/passes/.ipynb_checkpoints/qubo_unroller-checkpoint.py
+live_demos/optimization/passes/.ipynb_checkpoints/validation-checkpoint.py
+live_demos/optimization/problems/.ipynb_checkpoints/quadratic_program-checkpoint.py
+live_demos/optimization/problems/.ipynb_checkpoints/variable-checkpoint.py
+live_demos/optimization/translators/.ipynb_checkpoints/__init__-checkpoint.py
+live_demos/optimization/translators/.ipynb_checkpoints/docplex_mp-checkpoint.py
+live_demos/optimization/translators/.ipynb_checkpoints/prettyprint-checkpoint.py
+live_demos/optimization/workflows/.ipynb_checkpoints/__init__-checkpoint.py
