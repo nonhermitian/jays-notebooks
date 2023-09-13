@@ -14,7 +14,7 @@ The four steps are:
 ### First Programs
 
 - [Mermin](Mermin.ipynb)-- showing how to run a list of quantum circuits and demonstrate entanglement.
-- GoldenRatio -- Showing how we can use the GoldenRatio method to optimize the phase to minimize the Mermin Operator.
+- [Golden Ratio Optimization](GoldenRation.ipynb) -- Showing how we can use the GoldenRatio method to optimize the phase to minimize the Mermin Operator.
 - VQE -- A general method showing how to use VQE inside a minimized loop.
 
 ### Optimization
