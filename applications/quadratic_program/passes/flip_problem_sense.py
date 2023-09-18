@@ -97,11 +97,11 @@ class _FlipProblemSense(QuadraticProgramConverter):
             The result of the original problem.
 
         Raises:
-            QiskitOptimizationError: if the number of variables in the result differs from
+            QuadraticProgramError: if the number of variables in the result differs from
                                      that of the original problem.
         """
         if len(x) != self._src_num_vars:
-            raise QiskitOptimizationError(
+            raise QuadraticProgramError(
                 f"The number of variables in the passed result differs from "
                 f"that of the original problem, should be {self._src_num_vars}, but got {len(x)}."
             )

@@ -6,3 +6,10 @@ providers/.ipynb_checkpoints/*
 applications/.ipynb_checkpoints/*
 .vscode/*
 applications/__pycache__/*
+applications/quadratic_program/__pycache__/*
+applications/quadratic_program/passes/__pycache__/*
+applications/translators/__pycache__/*
+applications/workflows/__pycache__/*
+applications/quadratic_program/passes/*
+quantum_circuits/*
+operators/*

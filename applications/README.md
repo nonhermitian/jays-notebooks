@@ -15,13 +15,13 @@ The four steps are:
 
 - [Mermin](Mermin.ipynb)-- showing how to run a list of quantum circuits and demonstrate entanglement.
 - [Golden Ratio Optimization](GoldenRatio.ipynb) -- Showing how we can use the Golden Ratio method to optimize the phase to minimize the Mermin Operator.
-- VQE -- A general method showing how to use VQE inside a minimized loop.
+- [VQE for Spin Problem] -- A general method showing how to use a variational quantum algorithm for a Spin Hamiltonian.
 
 ### Optimization
 
-- Basic Quadratic Program Workflow -- A basic 3-variable workflow with no constraints
-- Knapsack Workflow -- 
-- MaxCut Workflow.
+- [Basic Quadratic Program Workflow](basic_optimization_workflow.ipynb) -- A basic 3-variable workflow with no constraints
+- [MaxCut](maxcut_workflow.ipynb) Workflow.
+- [Knapsack](knapsack_workflow.ipynb) Workflow -- 
 
 ### Chemistry
 
