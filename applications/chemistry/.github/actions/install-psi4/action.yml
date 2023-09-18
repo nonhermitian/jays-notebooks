@@ -1,0 +1,44 @@
+# This code is part of a Qiskit project.
+#
+# (C) Copyright IBM 2021, 2023.
+#
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
+name: 'Install PSI4'
+description: 'Installs conda PSI4'
+inputs:
+  os:
+    description: 'OS'
+    required: true
+  python-version:
+    description: 'Python version'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run : |
+        source "$CONDA/etc/profile.d/conda.sh"
+        conda activate psi4env
+        if [[ "${{ inputs.os }}" == "windows-2019" ]]; then
+          release=1.6
+          echo "installs psi4 release $release"
+          conda install -y psi4=$release python=${{ inputs.python-version }} -c psi4 -c conda-forge
+        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          release=1.6
+          echo 'installs psi4 release $release'
+          conda install -y psi4=$release python=${{ inputs.python-version }} -c psi4
+          echo 'update intel-openmp'
+          conda update -y -c anaconda intel-openmp
+          echo 'update llvm-openmp'
+          conda update -y -c conda-forge llvm-openmp
+        else
+          echo 'installs psi4 stable release'
+          conda install -y psi4 python=${{ inputs.python-version }} -c psi4
+        fi
+      shell: bash
