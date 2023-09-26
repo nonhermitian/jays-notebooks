@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    Fixed the manual active orbital selection when specifying the active number
-    of electrons as a tuple rather than an integer.

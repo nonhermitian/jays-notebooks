@@ -1,4 +1,0 @@
----
-features:
-  - |
-    The `degree_of_freedom` attribute of the :class:`~qiskit_nature.drivers.Molecule` class now has its dedicated getter and setter.

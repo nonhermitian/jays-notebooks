@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    Ensure `BaseProblem.molecule_data_transformed` is set when using a legacy
-    driver type without any transformers.

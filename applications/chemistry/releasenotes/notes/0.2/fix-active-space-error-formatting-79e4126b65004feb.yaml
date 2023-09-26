@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    ``QiskitNatureError``s where not being raised properly by the ``ActiveSpaceTransformer`` due to
-    ill-formatted error messages.

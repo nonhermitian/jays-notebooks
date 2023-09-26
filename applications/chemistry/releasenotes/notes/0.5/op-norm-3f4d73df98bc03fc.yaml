@@ -1,4 +1,0 @@
----
-features:
-  - |
-    Adds :meth:`.SparseLabelOp.induced_norm`.

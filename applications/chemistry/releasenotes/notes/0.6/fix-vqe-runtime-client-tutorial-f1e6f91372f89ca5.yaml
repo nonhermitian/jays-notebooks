@@ -1,4 +1,0 @@
----
-fixes:
-  - |
-    Fixes the :class:`.VQEClient` to work properly with the latest code.

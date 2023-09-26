@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    Fixes the behavior of :meth:`.SpinOp.to_matrix` for operators acting on more
-    than a single spin.
